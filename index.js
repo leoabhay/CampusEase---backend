@@ -57,9 +57,22 @@ app.use(express.json());
 
 // cors
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:4200', // frontend URL
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'http://localhost:4200',
+      'https://campuseasencit.netlify.app'
+    ];
+    if (process.env.FRONTEND_URL) {
+      allowedOrigins.push(process.env.FRONTEND_URL.trim().replace(/\/$/, ""));
+    }
+    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes(origin.replace(/\/$/, ""))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'], // allow JWT token header
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
