@@ -26,7 +26,8 @@ router.post('/mark-attendance', async (req, res) => {
     }
 
     // Send image to Flask face recognition server
-    const faceRes = await axios.post('http://127.0.0.1:5000/verify-face', { image });
+    const faceServerUrl = (process.env.FACE_SERVER_URL || 'http://127.0.0.1:5000').replace(/\/$/, "");
+    const faceRes = await axios.post(`${faceServerUrl}/verify-face`, { image });
 
     if (!faceRes.data.success) {
       return res.status(404).json({ message: 'Face not recognized' });
@@ -197,7 +198,8 @@ router.post('/register-face', async (req, res) => {
     }
 
     // Call Flask server to register face
-    const flaskRes = await axios.post('http://127.0.0.1:5000/register-face', { image, rollno });
+    const faceServerUrl = (process.env.FACE_SERVER_URL || 'http://127.0.0.1:5000').replace(/\/$/, "");
+    const flaskRes = await axios.post(`${faceServerUrl}/register-face`, { image, rollno });
 
     if (!flaskRes.data.success) {
       return res.status(400).json({ message: 'Flask registration failed', details: flaskRes.data });
