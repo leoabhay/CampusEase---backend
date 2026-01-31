@@ -11,7 +11,7 @@ const server = http.createServer(app);
 // socket connection
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:4200',
+        origin: process.env.FRONTEND_URL || 'http://localhost:4200',
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }
@@ -57,7 +57,7 @@ app.use(express.json());
 
 // cors
 const corsOptions = {
-  origin: 'http://localhost:4200', // frontend URL
+  origin: process.env.FRONTEND_URL || 'http://localhost:4200', // frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'], // allow JWT token header
   credentials: true,
@@ -96,10 +96,14 @@ app.use(scheduleRoutes);
 app.use(Academic);
 app.use(Face);
 
+app.get('/', (req, res) => {
+    res.send('API is running...');
+});
+
 // Serve static files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // start the server
 server.listen(process.env.PORT || 3200, () => {
-    console.log(`Server is running on port ${process.env.PORT || 5000}`);
+    console.log(`Server is running on port ${process.env.PORT || 3200}`);
 });
