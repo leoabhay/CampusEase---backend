@@ -96,6 +96,10 @@ app.use(scheduleRoutes);
 app.use(Academic);
 app.use(Face);
 
+app.get('/', (req, res) => {
+    res.send('API is running...');
+});
+
 // Serve static files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
